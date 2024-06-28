@@ -441,6 +441,150 @@ Morreu_Heroi:
     rts
     
 Move_Heroi:
+
+    push r0 ; Dir / posicao_heroi
+    push r1 ; inchar
+    push r2 ; local helper
+    push r3
+    push r4
+    
+    ; Sincronização
+    loadn   r0, #5000
+    loadn   r1, #0
+    mod     r0, r6, r0      ; r1 = r0 % r1 (Teste condições de contorno)
+    cmp     r0, r1
+    jne Move_End
+    ; =============
+    
+    ;Verifica_objetivo
+    
+    Change_Dir:
+        
+        call digLetra
+        
+        loadn r1, #Letra
+        
+        loadn r2, #100  ; char r4 = 'd'
+        cmp r1, r2
+        jeq Move_D
+        
+        loadn r2, #115  ; char r4 = 's'
+        cmp r1, r2
+        jeq Move_S
+        
+        loadn r2, #97   ; char r4 = 'a'
+        cmp r1, r2
+        jeq Move_A
+        
+        loadn r2, #119  ; char r4 = 'w'
+        cmp r1, r2
+        jeq Move_W      
+        
+        jmp Update_Move
+    
+        Move_D:
+            loadn   r0, #0
+            ; Impede de "ir pra trás"
+            loadn   r1, #2
+            load    r2, Dir
+            cmp     r1, r2 ; se estiver para a direçao certa, vá
+            jeq     Move_Left
+            
+            ; se não atualiza direção
+            store   Dir, r0
+            jmp     Move_Right
+        Move_S:
+            loadn   r0, #1 
+            ; Impede de "ir pra trás"
+            loadn   r1, #3
+            load    r2, Dir
+            cmp     r1, r2
+            jeq     Move_Up
+            
+            store   Dir, r0
+            jmp     Move_Down
+        Move_A:
+            loadn   r0, #2
+            ; Impede de "ir pra trás"
+            loadn   r1, #0
+            load    r2, Dir
+            cmp     r1, r2
+            jeq     Move_Right
+            
+            store   Dir, r0
+            jmp     Move_Left
+        Move_W:
+            loadn   r0, #3
+            ; Impede de "ir pra trás"
+            loadn   r1, #1
+            load    r2, Dir
+            cmp     r1, r2
+            jeq     Move_Down
+            
+            store   Dir, r0
+            jmp     Move_Up
+    
+    Update_Move:
+        load    r0, Dir ; carrega a direção a ser seguida
+                
+        loadn   r2, #0
+        cmp     r0, r2
+        jeq     Move_Right
+        
+        loadn   r2, #1
+        cmp     r0, r2
+        jeq     Move_Down
+        
+        loadn   r2, #2
+        cmp     r0, r2
+        jeq     Move_Left
+        
+        loadn   r2, #3
+        cmp     r0, r2
+        jeq     Move_Up
+        
+        jmp Move_End
+        
+        Move_Right:
+            loadn   r0, #posicao_heroi   ; r0 = & posicao_heroi
+            loadi   r1, r0          ; r1 = posicao_heroi[0]
+            inc     r1              ; r1++
+            storei  r0, r1
+            
+            jmp Move_End
+                
+        Move_Down:
+            loadn   r0, #posicao_heroi   ; r0 = & posicao_heroi
+            loadi   r1, r0          ; r1 = posicao_heroi[0]
+            loadn   r2, #40
+            add     r1, r1, r2
+            storei  r0, r1
+            
+            jmp Move_End
+        
+        Move_Left:
+            loadn   r0, #posicao_heroi   ; r0 = & posicao_heroi
+            loadi   r1, r0          ; r1 = posicao_heroi[0]
+            dec     r1              ; r1--
+            storei  r0, r1
+            
+            jmp Move_End
+        Move_Up:
+            loadn   r0, #posicao_heroi   ; r0 = & posicao_heroi
+            loadi   r1, r0          ; r1 = posicao_heroi[0]
+            loadn   r2, #40
+            sub     r1, r1, r2
+            storei  r0, r1
+            
+            jmp Move_End
+    
+    Move_End:
+        pop r4
+        pop r3
+        pop r2
+        pop r1
+        pop r0
+
     rts
     
 Recoloca_Objetivo:
