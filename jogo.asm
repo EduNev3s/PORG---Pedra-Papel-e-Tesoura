@@ -20,6 +20,63 @@ Dir: var #1 ; 0-direita, 1-baixo, 2-esquerda, 3-cima
 
 Letra: var #1 ; variavel global para digLetra
 
+ponteiro_rand: var #1
+
+; tabela de números aleatórios
+; gerado pelo script em python
+; números variam de 0 a 100
+rand: var #50
+static rand + #0, #97
+static rand + #1, #73
+static rand + #2, #8
+static rand + #3, #8
+static rand + #4, #32
+static rand + #5, #88
+static rand + #6, #34
+static rand + #7, #32
+static rand + #8, #61
+static rand + #9, #61
+static rand + #10, #84
+static rand + #11, #0
+static rand + #12, #45
+static rand + #13, #35
+static rand + #14, #77
+static rand + #15, #80
+static rand + #16, #20
+static rand + #17, #87
+static rand + #18, #46
+static rand + #19, #54
+static rand + #20, #30
+static rand + #21, #52
+static rand + #22, #87
+static rand + #23, #80
+static rand + #24, #92
+static rand + #25, #99
+static rand + #26, #85
+static rand + #27, #37
+static rand + #28, #2
+static rand + #29, #46
+static rand + #30, #12
+static rand + #31, #64
+static rand + #32, #2
+static rand + #33, #22
+static rand + #34, #27
+static rand + #35, #84
+static rand + #36, #37
+static rand + #37, #73
+static rand + #38, #81
+static rand + #39, #77
+static rand + #40, #73
+static rand + #41, #92
+static rand + #42, #66
+static rand + #43, #82
+static rand + #44, #31
+static rand + #45, #57
+static rand + #46, #16
+static rand + #47, #90
+static rand + #48, #49
+static rand + #49, #95
+
 Main: 
 
     call Inicializacao
@@ -300,6 +357,24 @@ ImprimeTela_dificil:
     pop r2
     pop r1
         
+    rts
+
+; esta função altera o ponteiro para o próximo número aleatório
+; disponível, que pode ser acessado com as seguintes instruções:
+; load rx, ponteiro_rand
+; loadi rx, rx
+Proximo_numero_aleatorio:
+    push r0
+    push r1
+
+    loadi r0, #ponteiro_rand
+    load r1, r0 ; carrega próximo número aleatório
+    addi r0, r0, 1
+    mod r0, r0, 50 ; evita que o ponteiro passe do limite
+    storei r0, #ponteiro_rand ; atualiza o ponteiro para a tabela de números aleatórios
+
+    pop r1
+    pop r0
     rts
 
 Imprime:
