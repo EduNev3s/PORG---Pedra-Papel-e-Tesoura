@@ -11,23 +11,12 @@ erase_msn_dificuldade1: string "                        "
 mensagem_dificuldade2: string "[0] facil [1] medio [2] dificil"
 erase_msn_dificuldade2: string "                               "
 
-
 mensagem_eraseAll: string "|--------------------------------------||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||--------------------------------------|"
 
 posicao_heroi: var #1 ; variavel global para posição do herói
 posicao_obejtivo: var#1 ; variavel global para posição do objetivo
 
-; desenho heroi 
-desenho_heroi: var#4
-
-; Caractere do personagem para cima [0]
-static desenho_heroi + #0, #'^'
-; Caractere do personagem para baixo [1]
-static desenho_heroi + #1, #'V'
-; Caractere do personagem para esquerda [2]
-static desenho_heroi + #2, #'<'
-; Caractere do personagem para direita [3]
-static desenho_heroi + #3, #'>'
+Dir: var #1 ; 0-direita, 1-baixo, 2-esquerda, 3-cima 
 
 Letra: var #1 ; variavel global para digLetra
 
@@ -58,8 +47,21 @@ Main:
     
 Inicializacao:
 
+    push r0
+    push r1
+    
+    ; começa com o herói direcionado para direita
+    loadn r0, #0
+    store Dir, r0
+    
+    loadn r1, #1122
+    store  posicao_heroi, r1
+
     call Apaga_mapa
     call Primeira_Tela
+    
+    pop r1
+    pop r0
     
     rts
     
@@ -377,6 +379,62 @@ ImprimeTela_mapa0:
     
     
 Desenha_Heroi:
+
+    push r0
+    push r1 
+    push r2 
+    push r3
+    push r4
+    
+    loadn r0, #posicao_heroi
+    
+    ; define qual caractere será usado de acordo com a direção
+    
+    load r1, Dir
+    
+    loadn r2, #0    ; se está para direita
+    cmp r1, r2
+    jeq vai_direita
+    
+    loadn r2, #1
+    cmp r1, r2
+    jeq vai_baixo
+    
+    loadn r2, #2
+    cmp r1, r2
+    jeq vai_esquerda
+    
+    loadn r2, #3
+    cmp r1, r2
+    jeq vai_cima
+    
+    vai_direita:
+        loadn r3, #'>'
+        jmp ch_definido    
+    
+    vai_baixo:
+        loadn r3, #'v'
+        jmp ch_definido
+    
+    vai_esquerda:
+        loadn r3, #'<'
+        jmp ch_definido
+    
+    vai_cima:
+        loadn r3, #'^'
+        jmp ch_definido
+        
+    ch_definido:
+    
+    loadi r4, r0
+    outchar r3, r4
+    
+    pop r4
+    pop r3
+    pop r2
+    pop r1
+    pop r0
+
     rts
     
 Morreu_Heroi:
