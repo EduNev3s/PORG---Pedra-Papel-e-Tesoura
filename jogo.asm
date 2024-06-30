@@ -17,94 +17,39 @@ erase_msn_dificuldade2: string "                               "
 mensagem_eraseAll: string "|--------------------------------------||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||--------------------------------------|"
 
 posicao_heroi: var #1 ; variavel global para posição do herói
-posicao_obejtivo: var#1 ; variavel global para posição do objetivo
+posicao_objetivo: var#1 ; variavel global para posição do objetivo
 
 Dir: var #1 ; 0-direita, 1-baixo, 2-esquerda, 3-cima 
 
+posicao_obejtivo: var #1
+status_objetivo: var #1
+
 Letra: var #1 ; variavel global para digLetra
 
-; index do número aleatório	atualmente selecionado
-posicao_rand: var #1
-; posição na memória do número aleatório atualmente selecionado
-ponteiro_rand: var #1
-
-; tabela de números aleatórios
-; gerado pelo script em python
-; números variam de 0 a 100
-rand: var #50
-static rand + #0, #97
-static rand + #1, #73
-static rand + #2, #8
-static rand + #3, #8
-static rand + #4, #32
-static rand + #5, #88
-static rand + #6, #34
-static rand + #7, #32
-static rand + #8, #61
-static rand + #9, #61
-static rand + #10, #84
-static rand + #11, #0
-static rand + #12, #45
-static rand + #13, #35
-static rand + #14, #77
-static rand + #15, #80
-static rand + #16, #20
-static rand + #17, #87
-static rand + #18, #46
-static rand + #19, #54
-static rand + #20, #30
-static rand + #21, #52
-static rand + #22, #87
-static rand + #23, #80
-static rand + #24, #92
-static rand + #25, #99
-static rand + #26, #85
-static rand + #27, #37
-static rand + #28, #2
-static rand + #29, #46
-static rand + #30, #12
-static rand + #31, #64
-static rand + #32, #2
-static rand + #33, #22
-static rand + #34, #27
-static rand + #35, #84
-static rand + #36, #37
-static rand + #37, #73
-static rand + #38, #81
-static rand + #39, #77
-static rand + #40, #73
-static rand + #41, #92
-static rand + #42, #66
-static rand + #43, #82
-static rand + #44, #31
-static rand + #45, #57
-static rand + #46, #16
-static rand + #47, #90
-static rand + #48, #49
-static rand + #49, #95
+;teste
+tam_teste: var #1
 
 Main: 
 
     call Inicializacao
     
-    loop_main:
-    
-        call Desenha_Heroi
-        call Morreu_Heroi
+    loop:
+        loop_ingame:
+            call Desenha_Heroi
+            call Morreu_Heroi
+         
+            call Move_Heroi
+            call Recoloca_Objetivo
+            
+            call Delay
         
-        call Move_Heroi
-        
-        ;call Recoloca_Objetivo
-        
-        call Delay
-        
-    jmp loop_main
+        jmp loop_ingame
     
     loop_gameover:
     
         call Restart
     
-    jmp loop_gameover
+        jmp loop_gameover
     
     
 Inicializacao:
@@ -116,13 +61,19 @@ Inicializacao:
     loadn r0, #0
     store Dir, r0
     
-    loadn r1, #1082
+    loadn r0, #1
+    store tam_teste, r0
+    
+    loadn r1, #460
     store  posicao_heroi, r1
+    
+    loadn   r0, #820
+    loadn   r1, #'X'
+    outchar r1, r0
+    store   posicao_obejtivo, r0
 
     call Apaga_mapa
     call Primeira_Tela
-    
-    
     
     pop r1
     pop r0
@@ -221,17 +172,17 @@ switch_dificuldade:
         
     selecionou_facil:
         call JogoFacil
-        jmp loop_main
+        jmp loop_ingame
        
     
     selecionou_medio:
         call JogoMedio
-        jmp loop_main
+        jmp loop_ingame
         
     
     selecionou_dificil:
         call JogoDificil
-        jmp loop_main 
+        jmp loop_ingame 
         
     
     pop r3
@@ -366,31 +317,6 @@ ImprimeTela_dificil:
         
     rts
 
-; esta função altera o ponteiro para o próximo número aleatório
-; disponível, que pode ser acessado com as seguintes instruções:
-; load rx, ponteiro_rand
-; loadi rx, rx
-Proximo_numero_aleatorio:
-    push r0
-    push r1
-
-    load r0, posicao_rand
-
-    loadn r1, #1
-    add r0, r0, r1 ; move para o próximo número aleatório
-
-    loadn r1, #50
-    mod r0, r0, r1 ; evita que o ponteiro passe do limite
-    store posicao_rand, r0 ; atualiza a posição do número aleatório selecionado
-
-    loadn r1, #rand ; carrega o offset do vetor de números aleatórios
-    add r1, r1, r0 ; adiciona o index do número aleatório selecionado
-    store ponteiro_rand, r1 ; salva o byte offset do número aleatório selecionado
-
-    pop r1
-    pop r0
-    rts
-
 Imprime:
     push r0     ; Posição na tela para imprimir a string
     push r1     ; Endereço da string a ser impressa
@@ -476,6 +402,14 @@ Desenha_Heroi:
     push r4
     push r5 ; cor do herói
     
+    ; Sincronização
+    loadn   r0, #1000
+    loadn   r1, #0
+    mod     r0, r6, r0      ; r1 = r0 % r1 (Teste condições de contorno)
+    cmp     r0, r1
+    jne desenha_final
+    ; =============
+    
     loadn r0, #posicao_heroi
     loadn r5, #3584 ;aqua
     
@@ -521,22 +455,27 @@ Desenha_Heroi:
     loadi r4, r0
     outchar r3, r4
     
-    pop r5
-    pop r4
-    pop r3
-    pop r2
-    pop r1
-    pop r0
+    load    r0, posicao_obejtivo
+    loadn   r1, #'X'
+    outchar r1, r0
+    
+    loadn   r0, #posicao_heroi   ; r0 = & posicao_heroi
+    loadn   r1, #' '        ; r1 = ' '
+    loadi   r2, r0          ; r2 = posicao_heroi[tam_teste]
+    outchar r1, r2
+    
+    desenha_final:
+    
+        pop r5
+        pop r4
+        pop r3
+        pop r2
+        pop r1
+        pop r0
 
     rts
     
 Morreu_Heroi:
-    push r0 
-    push r1 
-    push r2
-    push r3
-    push r4
-
     loadn r0, #posicao_heroi
     loadi r1, r0
     
@@ -564,13 +503,30 @@ Morreu_Heroi:
     cmp r1, r2
     jgr GameOver_Activate
     
-    ; Trombou em algo que não é ' '
-    loadn r2, #' '
-    cmp r1, r2
-    jne GameOver_Activate
+    ; Trombou na própria cobra
+    Collision_Check:
+        load    r2, tam_teste
+        loadn   r3, #1
+        loadi   r4, r0          ; Posição da cabeça
+        
+        Collision_Loop:
+            inc     r0
+            loadi   r1, r0
+            cmp r1, r4
+            jeq GameOver_Activate
+            
+            dec r2
+            cmp r2, r3
+            jne Collision_Loop
+        
+    
+    jmp Dead_Snake_End
     
     GameOver_Activate:
-    
+        load    r0, posicao_objetivo
+        loadn   r1, #' '
+        outchar r1, r0
+        
         loadn r0, #532
         loadn r1, #mensagem_gameover1
         loadn r2, #0
@@ -584,12 +540,6 @@ Morreu_Heroi:
         jmp loop_gameover
     
     Dead_Snake_End:
-    
-    pop r4 
-    pop r3
-    pop r2
-    pop r1
-    pop r0
     
     rts
     
@@ -610,14 +560,48 @@ Move_Heroi:
     jne Move_End
     ; =============
     
-    ;Verifica_objetivo
+    Check_Food:
+        load    r0, posicao_objetivo
+        loadn   r1, #posicao_heroi
+        loadi   r2, r1
+        
+        cmp r0, r2
+        jne Spread_Move
+        
+        load    r0, tam_teste
+        inc     r0
+        store   tam_teste, r0
+        
+        loadn   r0, #0
+        dec     r0
+        store   status_objetivo, r0
+        
+    Spread_Move:
+        loadn   r0, #posicao_heroi
+        loadn   r1, #posicao_heroi
+        load    r2, tam_teste
+        
+        add     r0, r0, r2      ; r0 = posicao_heroi[Size]
+        
+        dec     r2              ; r1 = posicao_heroi[Size-1]
+        add     r1, r1, r2
+        
+        loadn   r4, #0
+        
+        Spread_Loop:
+            loadi   r3, r1
+            storei  r0, r3
+            
+            dec r0
+            dec r1
+            
+            cmp r2, r4
+            dec r2
+            
+            jne Spread_Loop 
     
     Change_Dir:
-        
-        ;inchar r1
-        call digLetra
-        
-        loadn r1, #Letra
+        inchar  r1
         
         loadn r2, #100  ; char r4 = 'd'
         cmp r1, r2
@@ -642,14 +626,13 @@ Move_Heroi:
             ; Impede de "ir pra trás"
             loadn   r1, #2
             load    r2, Dir
-            cmp     r1, r2 ; se estiver para a direçao certa, vá
+            cmp     r1, r2
             jeq     Move_Left
             
-            ; se não atualiza direção
             store   Dir, r0
             jmp     Move_Right
         Move_S:
-            loadn   r0, #1 
+            loadn   r0, #1
             ; Impede de "ir pra trás"
             loadn   r1, #3
             load    r2, Dir
@@ -680,7 +663,7 @@ Move_Heroi:
             jmp     Move_Up
     
     Update_Move:
-        load    r0, Dir ; carrega a direção a ser seguida
+        load    r0, Dir
                 
         loadn   r2, #0
         cmp     r0, r2
@@ -740,7 +723,7 @@ Move_Heroi:
         pop r1
         pop r0
 
-        rts
+    rts
 
 Apaga_Heroi:
     push r0
@@ -763,6 +746,105 @@ Apaga_Heroi:
     rts
 
 Recoloca_Objetivo:
+    push r0
+    push r1
+    push r2
+    push r3
+
+    loadn   r0, #0
+    dec     r0
+    load    r1, status_objetivo
+    cmp     r0, r1
+    
+    jne Replace_End
+    
+    loadn r1, #0
+    store status_objetivo, r1
+    load  r1, posicao_objetivo
+    
+    load r0, Dir
+    
+    loadn r2, #0
+    cmp r0, r2
+    jeq Replace_Right
+    
+    loadn r2, #1
+    cmp r0, r2
+    jeq Replace_Down
+    
+    loadn r2, #2
+    cmp r0, r2
+    jeq Replace_Left
+    
+    loadn r2, #3
+    cmp r0, r2
+    jeq Replace_Up
+    
+    Replace_Right:
+        loadn r3, #355
+        add r1, r1, r3
+        jmp Replace_Boundaries
+    Replace_Down:
+        loadn r3, #445
+        sub r1, r1, r3
+        jmp Replace_Boundaries
+    Replace_Left:
+        loadn r3, #395
+        sub r1, r1, r3
+        jmp Replace_Boundaries
+    Replace_Up:
+        loadn r3, #485
+        add r1, r1, r3
+        jmp Replace_Boundaries
+    
+    
+    Replace_Boundaries:
+        loadn r2, #40
+        cmp r1, r2
+        jle Replace_Lower
+        
+        loadn r2, #1160
+        cmp r1, r2
+        jgr Replace_Upper
+        
+        loadn r0, #40
+        loadn r3, #1
+        mod r2, r1, r0
+        cmp r2, r3
+        jel Replace_West
+        
+        loadn r0, #40
+        loadn r3, #39
+        mod r2, r1, r0
+        cmp r2, r3
+        jeg Replace_East
+        
+        jmp Replace_Update
+        
+        Replace_Upper:
+            loadn r1, #215
+            jmp Replace_Update
+        Replace_Lower:
+            loadn r1, #1035
+            jmp Replace_Update
+        Replace_East:
+            loadn r1, #835
+            jmp Replace_Update
+        Replace_West:
+            loadn r1, #205
+            jmp Replace_Update
+            
+        Replace_Update:
+            store posicao_objetivo, r1
+            loadn r0, #'X'
+            outchar r0, r1
+    
+    Replace_End:
+        pop r3
+        pop r2
+        pop r1
+        pop r0
+    
     rts
 
 Delay:
@@ -810,7 +892,7 @@ Restart:
         call Apaga_Heroi
         call Inicializacao
         
-        jmp loop_main
+        jmp loop_ingame
         
     Restart_End:
     
@@ -994,7 +1076,7 @@ facilLinha25: string "|----|    |--------------|----|    |---|"
 facilLinha26: string "|                        |             |"
 facilLinha27: string "|                        |             |"
 facilLinha28: string "|                        |             |"
-facilLinha29: string "|----------------------------------|---|"
+facilLinha29: string "|--------------------------------------|"
 
 
 ; labirinto médio -> 3 chs de distância
