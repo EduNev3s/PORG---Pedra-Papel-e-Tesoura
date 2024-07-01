@@ -33,9 +33,7 @@ rand: var #3
     static rand + #0, #1 ; pedra
     static rand + #1, #2 ; papel
     static rand + #2, #3 ; tesoura
-    
-teste1: string "AAAAAAAA"
-teste2: string "BBBBBBBB"
+
 
 Main:
     loop_main:    
@@ -109,37 +107,15 @@ Escolhe_numero:
         sel_pedra:
             loadn r0, #1
             store selecao_usuraio, r0
-            
-            ;debug
-            loadn r0, #50 ;posição da mensagem na tela
-            loadn r1, #teste1
-            loadn r2, #0
-            call Imprime
-            
             jmp end_escolheNum
             
         sel_papel:
             loadn r0, #2
-            store selecao_usuraio, r0
-            
-            ;debug
-            loadn r0, #50 ;posição da mensagem na tela
-            loadn r1, #teste1
-            loadn r2, #2304 ; vermelho
-            call Imprime
-            
             jmp end_escolheNum
             
         sel_tesoura:
             loadn r0, #3
             store selecao_usuraio, r0
-            
-            ;debug
-            loadn r0, #50 ;posição da mensagem na tela
-            loadn r1, #teste1
-            loadn r2, #3072 ;azul
-            call Imprime
-            
             jmp end_escolheNum
           
 
@@ -173,54 +149,7 @@ Escolha_da_maquina:
     add r2, r2, r1 ; soma incremento ao início da tabela rand
     
     loadi r3, r2 ; R3 = rand(IncRand)   
-    
-    ;debug
-    loadn r0, #1
-    loadn r1, #2
-    loadn r2, #3
-    
-    
-    cmp r3, r0
-    jeq pedra
-    
-    cmp r3, r1
-    jeq papel
-    
-    cmp r3, r2
-    jeq tesoura
-    
-    pedra:
-            
-        ;debug
-        loadn r0, #60 ;posição da mensagem na tela
-        loadn r1, #teste2
-        loadn r2, #0
-        call Imprime
-            
-        jmp end
-            
-    papel:
-       
-        ;debug
-        loadn r0, #60 ;posição da mensagem na tela
-        loadn r1, #teste2
-        loadn r2, #2304 ; vermelho
-        call Imprime
-            
-        jmp end
-            
-    tesoura:
 
-        ;debug
-        loadn r0, #60 ;posição da mensagem na tela
-        loadn r1, #teste2
-        loadn r2, #3072 ;azul
-        call Imprime
-        
-        jmp end
-    
-    
-    end:
     store selecao_maquina, r3
     
     pop r3
@@ -258,7 +187,7 @@ Jogo:
     
     ;1-usuário perdeu, 2-usuário perdeu, 3- empate
     cmp r0, r1
-    jne quem_ganhou
+    jne quem_ganhou ; se não for empate, vê quem ganhou
     
     ; se for igual, deu empate
     loadn r3, #3 
@@ -336,19 +265,18 @@ Resultado:
     push r5 ; resultado do jogo
     push r6
     
-    ; debug: volta o limpa_tela
-    ;call Limpa_Tela
+    call Limpa_Tela
     
     loadn r0, #1 ; pedra / usuário perdeu
     loadn r1, #2 ; papel / usuário ganhou
     loadn r2, #3 ; tesoura / empate
     
     ; 1-pedra, 2-papel, 3-tesoura
-    loadn r3, #selecao_usuraio
-    loadn r4, #selecao_maquina
+    load r3, selecao_usuraio
+    load r4, selecao_maquina
     
     ; 1-usuário perdeu, 2-usuário perdeu, 3- empate
-    loadn r5, #resultado_final 
+    load r5, resultado_final 
     
     cmp r3, r0 
     jeq imprime_us_pedra
@@ -358,6 +286,8 @@ Resultado:
     
     cmp r3, r2
     jeq imprime_us_tesoura
+    
+    jmp imprime_MA
     
     imprime_US: ; imprime resultado do usuário 
         imprime_us_pedra:
@@ -396,6 +326,8 @@ Resultado:
         cmp r4, r2
         jeq imprime_ma_tesoura
         
+        jmp imprime_mensagem_resultado
+        
         imprime_ma_pedra:
             loadn r1, #pedraMALinha00
             loadn r2, #2304 ;vermelho
@@ -417,11 +349,11 @@ Resultado:
             call ImprimeTela2
             jmp imprime_mensagem_resultado
     
-    imprime_mensagem_resultado: ; imprime mensagem de acordo com a 
+    imprime_mensagem_resultado: ; imprime mensagem de acordo com o resultado final do jogo
         ; garante os valores nos registrores 
-        loadn r0, #1 ; pedra / usuário perdeu
-        loadn r1, #2 ; papel / usuário ganhou
-        loadn r2, #3 ; tesoura / empate
+        loadn r0, #1 ; usuário perdeu
+        loadn r1, #2 ; usuário ganhou
+        loadn r2, #3 ; empate
         
         cmp r5, r0
         jeq imprime_mensagem_perdeu
@@ -432,6 +364,8 @@ Resultado:
         cmp r5, r2
         jeq imprime_mensagem_empate
         
+        jmp end_resultado
+        
         imprime_mensagem_perdeu:
             loadn r0, #1042 ;posição da mensagem na tela
             loadn r1, #mensagem_perdeu
@@ -440,7 +374,7 @@ Resultado:
             jmp end_resultado
             
         imprime_mensagem_ganhou:
-            loadn r0, #1042 ;posição da mensagem na tela
+            loadn r0, #1041 ;posição da mensagem na tela
             loadn r1, #mensagem_ganhou
             loadn r2, #2816 ; amarelo
             call Imprime
@@ -637,12 +571,12 @@ papelUSLinha06: string "|                   |                  |"
 papelUSLinha07: string "|                   |                  |"
 papelUSLinha08: string "|                   |                  |"
 papelUSLinha09: string "|                   |                  |"
-papelUSLinha10: string "|     _______       |                  |"
-papelUSLinha11: string "| ---'   ____)____  |                  |"
-papelUSLinha12: string "|           ______) |                  |"
-papelUSLinha13: string "|           _______)|                  |"
-papelUSLinha14: string "|          _______) |                  |"
-papelUSLinha15: string "| ---.__________)   |                  |"
+papelUSLinha10: string "|     ____          |                  |"
+papelUSLinha11: string "| ---'  __)____     |                  |"
+papelUSLinha12: string "|         _____)    |                  |"
+papelUSLinha13: string "|          _____)   |                  |"
+papelUSLinha14: string "|          ____)    |                  |"
+papelUSLinha15: string "| ---._______)      |                  |"
 papelUSLinha16: string "|                   |                  |"
 papelUSLinha17: string "|                   |                  |"
 papelUSLinha18: string "|                   |                  |"
@@ -701,12 +635,12 @@ tesouraUSLinha06: string "|                   |                  |"
 tesouraUSLinha07: string "|                   |                  |"
 tesouraUSLinha08: string "|                   |                  |"
 tesouraUSLinha09: string "|                   |                  |"
-tesouraUSLinha10: string "|     _______       |                  |"
-tesouraUSLinha11: string "| ---'   ____)____  |                  |"
-tesouraUSLinha12: string "|           ______) |                  |"
-tesouraUSLinha13: string "|        __________)|                  |"
-tesouraUSLinha14: string "|       (____)      |                  |"
-tesouraUSLinha15: string "| ---.__(___)       |                  |"
+tesouraUSLinha10: string "|     ____          |                  |"
+tesouraUSLinha11: string "| ---'   __)__      |                  |"
+tesouraUSLinha12: string "|         ____)     |                  |"
+tesouraUSLinha13: string "|        ______)    |                  |"
+tesouraUSLinha14: string "|       (__)        |                  |"
+tesouraUSLinha15: string "| ---._(__)         |                  |"
 tesouraUSLinha16: string "|                   |                  |"
 tesouraUSLinha17: string "|                   |                  |"
 tesouraUSLinha18: string "|                   |                  |"
@@ -732,12 +666,12 @@ papelMALinha06: string "|                    |                 |"
 papelMALinha07: string "|                    |                 |"
 papelMALinha08: string "|                    |                 |"
 papelMALinha09: string "|                    |                 |"
-papelMALinha10: string "|                    |       _______   |"
-papelMALinha11: string "|                    |  ____(____   '--|"
-papelMALinha12: string "|                    | (______         |"
-papelMALinha13: string "|                    |(_______         |"
-papelMALinha14: string "|                    | (_______        |"
-papelMALinha15: string "|                    |   (__________.--|"
+papelMALinha10: string "|                    |        ____     |"
+papelMALinha11: string "|                    |   ____(___  '---|"
+papelMALinha12: string "|                    |  (_____         |"
+papelMALinha13: string "|                    | (_____          |"
+papelMALinha14: string "|                    |  (____          |"
+papelMALinha15: string "|                    |     (_______.---|"
 papelMALinha16: string "|                    |                 |"
 papelMALinha17: string "|                    |                 |"
 papelMALinha18: string "|                    |                 |"
@@ -752,6 +686,7 @@ papelMALinha26: string "|                                      |"
 papelMALinha27: string "|                                      |"
 papelMALinha28: string "|                                      |"
 papelMALinha29: string "|--------------------------------------|"
+
 
 
 pedraMALinha00: string "|--------------------------------------|"
@@ -796,12 +731,12 @@ tesouraMALinha06: string "|                    |                 |"
 tesouraMALinha07: string "|                    |                 |"
 tesouraMALinha08: string "|                    |                 |"
 tesouraMALinha09: string "|                    |                 |"
-tesouraMALinha10: string "|                    |       _______   |"
-tesouraMALinha11: string "|                    |  ____(____   '--|"
-tesouraMALinha12: string "|                    | (______         |"
-tesouraMALinha13: string "|                    | (__________     |"
-tesouraMALinha14: string "|                    |      (____)     |"
-tesouraMALinha15: string "|                    |       (___)__.--|"
+tesouraMALinha10: string "|                    |         ____    |"
+tesouraMALinha11: string "|                    |      __(__  '-- |"
+tesouraMALinha12: string "|                    |     (__         |"
+tesouraMALinha13: string "|                    |     (______     |"
+tesouraMALinha14: string "|                    |        (__)     |"
+tesouraMALinha15: string "|                    |        (__)_.-- |"
 tesouraMALinha16: string "|                    |                 |"
 tesouraMALinha17: string "|                    |                 |"
 tesouraMALinha18: string "|                    |                 |"
