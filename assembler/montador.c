@@ -333,6 +333,18 @@ void DetectarLabels(void)
       case RTI_CODE:
       case HALT_CODE:
       case BREAKP_CODE:
+      case BREAKP_EQ_CODE:
+      case BREAKP_NE_CODE:
+      case BREAKP_Z_CODE:
+      case BREAKP_NZ_CODE:
+      case BREAKP_C_CODE:
+      case BREAKP_NC_CODE:
+      case BREAKP_GT_CODE:
+      case BREAKP_LT_CODE:
+      case BREAKP_EG_CODE:
+      case BREAKP_EL_CODE:
+      case BREAKP_O_CODE:
+      case BREAKP_NO_CODE:
       case SETC_CODE:
       case CLEARC_CODE:
       case NOP_CODE:
@@ -2632,6 +2644,54 @@ int BuscaInstrucao(char *nome)
   else if (strcmp(str_tmp, BREAKP_STR) == 0)
   {
     return BREAKP_CODE;
+  }
+  else if (strcmp(str_tmp, BREAKP_EQ_STR) == 0)
+  {
+    return BREAKP_EQ_CODE;
+  }
+  else if (strcmp(str_tmp, BREAKP_NE_STR) == 0)
+  {
+    return BREAKP_NE_CODE;
+  }
+  else if (strcmp(str_tmp, BREAKP_Z_STR) == 0)
+  {
+    return BREAKP_Z_CODE;
+  }
+  else if (strcmp(str_tmp, BREAKP_NZ_STR) == 0)
+  {
+    return BREAKP_NZ_CODE;
+  }
+  else if (strcmp(str_tmp, BREAKP_C_STR) == 0)
+  {
+    return BREAKP_C_CODE;
+  }
+  else if (strcmp(str_tmp, BREAKP_NC_STR) == 0)
+  {
+    return BREAKP_NC_CODE;
+  }
+  else if (strcmp(str_tmp, BREAKP_GT_STR) == 0)
+  {
+    return BREAKP_GT_CODE;
+  }
+  else if (strcmp(str_tmp, BREAKP_LT_STR) == 0)
+  {
+    return BREAKP_LT_CODE;
+  }
+  else if (strcmp(str_tmp, BREAKP_EG_STR) == 0)
+  {
+    return BREAKP_EG_CODE;
+  }
+  else if (strcmp(str_tmp, BREAKP_EL_STR) == 0)
+  {
+    return BREAKP_EL_CODE;
+  }
+  else if (strcmp(str_tmp, BREAKP_O_STR) == 0)
+  {
+    return BREAKP_O_CODE;
+  }
+  else if (strcmp(str_tmp, BREAKP_NO_STR) == 0)
+  {
+    return BREAKP_NO_CODE;
   }
   else if (strcmp(str_tmp, SETC_STR) == 0)
   {

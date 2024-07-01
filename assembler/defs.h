@@ -110,6 +110,18 @@
 #define INPUT_CODE 96
 #define OUTPUT_CODE 97
 #define SOUND_CODE 98
+#define BREAKP_EQ_CODE 120
+#define BREAKP_NE_CODE 121
+#define BREAKP_Z_CODE 122
+#define BREAKP_NZ_CODE 123
+#define BREAKP_C_CODE 124
+#define BREAKP_NC_CODE 125
+#define BREAKP_GT_CODE 126
+#define BREAKP_LT_CODE 127
+#define BREAKP_EG_CODE 128
+#define BREAKP_EL_CODE 129
+#define BREAKP_O_CODE 130
+#define BREAKP_NO_CODE 131
 
 /* Definicoes dos op codes (binarios em strings) */
 
@@ -312,7 +324,22 @@
 
 #define NOP_STR "NOP"
 #define HALT_STR "HALT"
+
+/* BREAKP*/
+
 #define BREAKP_STR "BREAKP"
+#define BREAKP_EQ_STR "BREAKP_EQ"
+#define BREAKP_NE_STR "BREAKP_NE"
+#define BREAKP_Z_STR "BREAKP_Z"
+#define BREAKP_NZ_STR "BREAKP_NZ"
+#define BREAKP_C_STR "BREAKP_C"
+#define BREAKP_NC_STR "BREAKP_NC"
+#define BREAKP_GT_STR "BREAKP_GT"
+#define BREAKP_LT_STR "BREAKP_LT"
+#define BREAKP_EG_STR "BREAKP_EG"
+#define BREAKP_EL_STR "BREAKP_EL"
+#define BREAKP_O_STR "BREAKP_O"
+#define BREAKP_NO_STR "BREAKP_NO"
 
 /* SETC */
 #define SETC_STR "SETC"
