@@ -1,44 +1,24 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include "defs.h"
-#include "parser.h"
-#include "structs.h"
-#include "montador.h"
+#makefile do montador
+COMPILER = gcc
+FILES =  montador.c parser.c structs.c
+OBJS = $(FILES:.c=.o)
+NAME_FLAG = -o
+LINK_FLAG = -g
+COMP_FLAG = -march=native -03 -g
+NAME = montador
 
-/* Versao do montador */
-#define VERSAO "0.0"
+all: main.o $(OBJS)
+	$(COMPILER) $^ $(LINK_FLAG) $(NAME_FLAG) $(NAME)
 
-/* Arquivos de entrada e saida */
-FILE *in;
-FILE *out;
+%.o: %.c %.h defs.h
+	$(COMPILER) -c $< $(COMP_FLAGS) $(NAME_FLAG) $@
 
-int main(int argc, char *argv[])
-{
+main.o: main.c $(wildcard *.h)
+	$(COMPILER) -c $< $(COMP_FLAGS) $(NAME_FLAG) $@
 
-    if (argc < 3)
-    {
-        printf("Montador :\nUso : %s <arquivo texto de entrada> <arquivo .mif de saida>\n",argv[0]);
-#ifndef __linux__
-        system("pause");
-#endif
-        exit(1);
-    }
+clear:
+	rm *.o
+	rm $(NAME)
 
-    printf("Montador v.%s\n",VERSAO);
-
-    CarregaPrograma(argv[1]);
-
-    out = fopen(argv[2],"w");
-
-    if (out == NULL)
-    {
-        parser_Abort("Impossivel criar arquivo para escrita!");
-    }
-
-    Montar();
-
-    fclose(out);
-
-    return 0;
-
-}
+install:
+	cp $(NAME) /bin
