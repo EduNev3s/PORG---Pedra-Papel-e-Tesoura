@@ -21,6 +21,16 @@ erase_msn_restart: string "                                     "
 
 mensagem_eraseAll: string "|-----PEDRA-----PAPEL------TESOURA-----||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||--------------------------------------|"
 
+;pedraUS: string "|--------------------------------------||                   |                  ||                   |                  ||                   |                  || pedra             |                  || -----             |                  ||                   |                  ||                   |                  ||                   |                  ||                   |                  ||     ______        |                  || ---'  ___ )       |                  ||      (___)        |                  ||      (___)        |                  ||      (__)         |                  ||---.__(_)          |                  ||                   |                  ||                   |                  ||                   |                  ||                   |                  ||                   |                  ||                   |                  ||                   |                  ||                   |                  ||                   |                  ||                                      ||                                      ||                                      ||                                      ||--------------------------------------|"
+;papelUS: string "|--------------------------------------||                   |                  ||                   |                  ||                   |                  || papel             |                  || -----             |                  ||                   |                  ||                   |                  ||                   |                  ||                   |                  ||     ____          |                  || ---'  __)____     |                  ||         _____)    |                  ||          _____)   |                  ||          ____)    |                  || ---._______)      |                  ||                   |                  ||                   |                  ||                   |                  ||                   |                  ||                   |                  ||                   |                  ||                   |                  ||                   |                  ||                   |                  ||                                      ||                                      ||                                      ||                                      ||--------------------------------------|"
+;tesouraUS: string "|--------------------------------------||                   |                  ||                   |                  ||                   |                  || tesoura           |                  || -------           |                  ||                   |                  ||                   |                  ||                   |                  ||                   |                  ||     ____          |                  || ---'   __)__      |                  ||         ____)     |                  ||        ______)    |                  ||       (__)        |                  || ---._(__)         |                  ||                   |                  ||                   |                  ||                   |                  ||                   |                  ||                   |                  ||                   |                  ||                   |                  ||                   |                  ||                   |                  ||                                      ||                                      ||                                      ||                                      ||--------------------------------------|"
+
+;pedraMA: string "|--------------------------------------||                    |                 ||                    |                 ||                    |                 ||                    |           pedra ||                    |           ----- ||                    |                 ||                    |                 ||                    |                 ||                    |                 ||                    |       ______    ||                    |      (___   '-- ||                    |      (___)      ||                    |      (___)      ||                    |       (__)      ||                    |        (_)__.-- ||                    |                 ||                    |                 ||                    |                 ||                    |                 ||                    |                 ||                    |                 ||                    |                 ||                    |                 ||                    |                 ||                                      ||                                      ||                                      ||                                      ||--------------------------------------|"
+;papelMA: string "|--------------------------------------||                    |                 ||                    |                 ||                    |                 ||                    |           papel ||                    |           ----- ||                    |                 ||                    |                 ||                    |                 ||                    |                 ||                    |        ____     ||                    |   ____(___  '---||                    |  (_____         ||                    | (_____          ||                    |  (____          ||                    |     (_______.---||                    |                 ||                    |                 ||                    |                 ||                    |                 ||                    |                 ||                    |                 ||                    |                 ||                    |                 ||                    |                 ||                                      ||                                      ||                                      ||                                      ||--------------------------------------|"
+;tesouraMA: string "|--------------------------------------||                    |                 ||                    |                 ||                    |                 ||                    |         tesoura ||                    |         ------- ||                    |                 ||                    |                 ||                    |                 ||                    |                 ||                    |         ____    ||                    |      __(__  '-- ||                    |     (__         ||                    |     (______     ||                    |        (__)     ||                    |        (__)_.-- ||                    |                 ||                    |                 ||                    |                 ||                    |                 ||                    |                 ||                    |                 ||                    |                 ||                    |                 ||                    |                 ||                                      ||                                      ||                                      ||                                      ||--------------------------------------|"
+
+tela0: string "|-----PEDRA-----PAPEL------TESOURA-----||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                    _                 ||                   ) )                ||                  /=/___              ||              ---'  (___)             ||                   (___)              ||                   (__)               ||             ---.__(_)                ||                                      |"
+
 ; 1-pedra, 2-papel, 3-tesoura
 selecao_usuraio: var #1 
 selecao_maquina: var #1
@@ -46,7 +56,12 @@ Inicializa:
 
     push r0 
     push r1
-    push r2 
+    push r2     
+    
+    loadn r0, #0 ;posição da mensagem na tela
+    loadn r1, #tela0
+    loadn r2, #512 ;verde
+    call Imprime
 
     loadn r0, #362 ;posição da mensagem na tela
     loadn r1, #mensagem_inicial
@@ -57,11 +72,6 @@ Inicializa:
     loadn r1, #mensagem_escolha1
     loadn r2, #0 ;branco 
     call Imprime
-    
-    loadn r1, #mapa0Linha00
-    loadn r2, #512 ;verde
-    loadn r6, #mapa0Linha00
-    call ImprimeTela2
     
     call Escolhe_numero
     
@@ -263,7 +273,7 @@ Resultado:
     push r3 ; seleção usuário
     push r4 ; seleção máquina
     push r5 ; resultado do jogo
-    push r6
+    ;push r6
     
     call Limpa_Tela
     
@@ -293,21 +303,21 @@ Resultado:
         imprime_us_pedra:
             loadn r1, #pedraUSLinha00
             loadn r2, #2816 ;amarelo
-            loadn r6, #pedraUSLinha00
+            ;loadn r6, #pedraUSLinha00
             call ImprimeTela2
             jmp imprime_MA
             
         imprime_us_papel:
             loadn r1, #papelUSLinha00
             loadn r2, #2816 ;amarelo
-            loadn r6, #papelUSLinha00
+            ;loadn r6, #papelUSLinha00
             call ImprimeTela2
             jmp imprime_MA
         
         imprime_us_tesoura:
             loadn r1, #tesouraUSLinha00
             loadn r2, #2816 ;amarelo
-            loadn r6, #tesouraUSLinha00
+            ;loadn r6, #tesouraUSLinha00
             call ImprimeTela2
             jmp imprime_MA
     
@@ -331,21 +341,21 @@ Resultado:
         imprime_ma_pedra:
             loadn r1, #pedraMALinha00
             loadn r2, #2304 ;vermelho
-            loadn r6, #pedraMALinha00
+            ;loadn r6, #pedraMALinha00
             call ImprimeTela2
             jmp imprime_mensagem_resultado
             
         imprime_ma_papel:
             loadn r1, #papelMALinha00
             loadn r2, #2304 ;vermelho
-            loadn r6, #papelMALinha00
+            ;loadn r6, #papelMALinha00
             call ImprimeTela2
             jmp imprime_mensagem_resultado
             
         imprime_ma_tesoura:
             loadn r1, #tesouraMALinha00
             loadn r2, #2304 ;vermelho
-            loadn r6, #tesouraMALinha00
+            ;loadn r6, #tesouraMALinha00
             call ImprimeTela2
             jmp imprime_mensagem_resultado
     
@@ -391,7 +401,7 @@ Resultado:
     
     call Restart
     
-    pop r6
+    ;pop r6
     pop r5
     pop r4
     pop r3
@@ -490,7 +500,7 @@ ImprimeTela2:   ;  Rotina de Impresao de Cenario na Tela Inteira
     push r3 ; protege o r3 na pilha para ser usado na subrotina
     push r4 ; protege o r4 na pilha para ser usado na subrotina
     push r5 ; protege o r5 na pilha para ser usado na subrotina
-    push r6 ; protege o r6 na pilha para ser usado na subrotina
+    ;push r6 ; protege o r6 na pilha para ser usado na subrotina
 
     loadn R0, #0    ; posicao inicial tem que ser o comeco da tela!
     loadn R3, #40   ; Incremento da posicao da tela!
@@ -502,11 +512,11 @@ ImprimeTela2:   ;  Rotina de Impresao de Cenario na Tela Inteira
         call ImprimeStr2
         add r0, r0, r3      ; incrementaposicao para a segunda linha na tela -->  r0 = R0 + 40
         add r1, r1, r4      ; incrementa o ponteiro para o comeco da proxima linha na memoria (40 + 1 porcausa do /0 !!) --> r1 = r1 + 41
-        add r6, r6, r4      ; incrementa o ponteiro para o comeco da proxima linha na memoria (40 + 1 porcausa do /0 !!) --> r1 = r1 + 41
+        ;add r6, r6, r4      ; incrementa o ponteiro para o comeco da proxima linha na memoria (40 + 1 porcausa do /0 !!) --> r1 = r1 + 41
         cmp r0, r5          ; Compara r0 com 1200
         jne ImprimeTela2_Loop   ; Enquanto r0 < 1200
 
-    pop r6  ; Resgata os valores dos registradores utilizados na Subrotina da Pilha
+    ;pop r6  ; Resgata os valores dos registradores utilizados na Subrotina da Pilha
     pop r5
     pop r4
     pop r3
@@ -529,8 +539,7 @@ ImprimeStr2:    ;  Rotina de Impresao de Mensagens:    r0 = Posicao da tela que 
     push r3 ; protege o r3 na pilha para ser usado na subrotina
     push r4 ; protege o r4 na pilha para ser usado na subrotina
     push r5 ; protege o r5 na pilha para ser usado na subrotina
-    push r6 ; protege o r6 na pilha para ser usado na subrotina
-    
+    ;push r6 ; protege o r6 na pilha para ser usado na subrotina
     
     loadn r3, #'\0' ; Criterio de parada
     loadn r5, #' '  ; Espaco em Branco
@@ -543,15 +552,15 @@ ImprimeStr2:    ;  Rotina de Impresao de Mensagens:    r0 = Posicao da tela que 
         jeq ImprimeStr2_Skip
         add r4, r2, r4  ; Soma a Cor
         outchar r4, r0  ; Imprime o caractere na tela
-        storei r6, r4
+        ;storei r6, r4
    ImprimeStr2_Skip:
         inc r0          ; Incrementa a posicao na tela
         inc r1          ; Incrementa o ponteiro da String
-        inc r6          ; Incrementa o ponteiro da String da Tela 0
+        ;inc r6          ; Incrementa o ponteiro da String da Tela 0
         jmp ImprimeStr2_Loop
     
    ImprimeStr2_Sai: 
-    pop r6  ; Resgata os valores dos registradores utilizados na Subrotina da Pilha
+    ;pop r6  ; Resgata os valores dos registradores utilizados na Subrotina da Pilha
     pop r5
     pop r4
     pop r3
