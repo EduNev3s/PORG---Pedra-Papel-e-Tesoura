@@ -2075,7 +2075,62 @@ Mod Rx, Ry, Rz
         */
 
       case BREAKP_CODE:
-        sprintf(str_msg, "%s0000000000", BREAKP);
+        sprintf(str_msg, "%s%s000000", BREAKP, NO_COND);
+        parser_Write_Inst(str_msg, end_cnt);
+        end_cnt += 1;
+        break;
+      case BREAKP_EQ_CODE:
+        sprintf(str_msg, "%s%s000000", BREAKP, COND_EQ);
+        parser_Write_Inst(str_msg, end_cnt);
+        end_cnt += 1;
+        break;
+      case BREAKP_NE_CODE:
+        sprintf(str_msg, "%s%s000000", BREAKP, COND_NE);
+        parser_Write_Inst(str_msg, end_cnt);
+        end_cnt += 1;
+        break;
+      case BREAKP_NZ_CODE:
+        sprintf(str_msg, "%s%s000000", BREAKP, COND_NZ);
+        parser_Write_Inst(str_msg, end_cnt);
+        end_cnt += 1;
+        break;
+      case BREAKP_C_CODE:
+        sprintf(str_msg, "%s%s000000", BREAKP, COND_C);
+        parser_Write_Inst(str_msg, end_cnt);
+        end_cnt += 1;
+        break;
+      case BREAKP_NC_CODE:
+        sprintf(str_msg, "%s%s000000", BREAKP, COND_NC);
+        parser_Write_Inst(str_msg, end_cnt);
+        end_cnt += 1;
+        break;
+      case BREAKP_GT_CODE:
+        sprintf(str_msg, "%s%s000000", BREAKP, COND_GT);
+        parser_Write_Inst(str_msg, end_cnt);
+        end_cnt += 1;
+        break;
+      case BREAKP_LT_CODE:
+        sprintf(str_msg, "%s%s000000", BREAKP, COND_LT);
+        parser_Write_Inst(str_msg, end_cnt);
+        end_cnt += 1;
+        break;
+      case BREAKP_EG_CODE:
+        sprintf(str_msg, "%s%s000000", BREAKP, COND_EG);
+        parser_Write_Inst(str_msg, end_cnt);
+        end_cnt += 1;
+        break;
+      case BREAKP_EL_CODE:
+        sprintf(str_msg, "%s%s000000", BREAKP, COND_EL);
+        parser_Write_Inst(str_msg, end_cnt);
+        end_cnt += 1;
+        break;
+      case BREAKP_O_CODE:
+        sprintf(str_msg, "%s%s000000", BREAKP, COND_O);
+        parser_Write_Inst(str_msg, end_cnt);
+        end_cnt += 1;
+        break;
+      case BREAKP_NO_CODE:
+        sprintf(str_msg, "%s%s000000", BREAKP, COND_NO);
         parser_Write_Inst(str_msg, end_cnt);
         end_cnt += 1;
         break;
