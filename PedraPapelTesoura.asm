@@ -16,11 +16,12 @@ erase_msn_ganhou: string "                                      "
 mensagem_empate: string "Empate! Que doideira!! Vamos de novo?"
 erase_msn_empate: string "                                     "
 
-mensagem_restart: string "Pressione 'space' para jogar novamente!"
-erase_msn_restart: string "                                       "
+mensagem_restart: string "Pressione 'space' para jogar de novo!"
+erase_msn_restart: string "                                     "
 
 mensagem_eraseAll: string "|-----PEDRA-----PAPEL------TESOURA-----||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||                                      ||--------------------------------------|"
 
+; 1-pedra, 2-papel, 3-tesoura
 selecao_usuraio: var #1 
 selecao_maquina: var #1
 
@@ -33,7 +34,8 @@ rand: var #3
     static rand + #1, #2 ; papel
     static rand + #2, #3 ; tesoura
     
-teste: string "AAAAAAAAAAAAAAAAAAAAAAAA"
+teste1: string "AAAAAAAA"
+teste2: string "BBBBBBBB"
 
 Main:
     loop_main:    
@@ -50,13 +52,18 @@ Inicializa:
 
     loadn r0, #362 ;posição da mensagem na tela
     loadn r1, #mensagem_inicial
-    loadn r2, #2816 ;amarelo 
+    loadn r2, #512 ;verde 
     call Imprime
     
     loadn r0, #530 ;posição da mensagem na tela
     loadn r1, #mensagem_escolha1
     loadn r2, #0 ;branco 
     call Imprime
+    
+    loadn r1, #mapa0Linha00
+    loadn r2, #512 ;verde
+    loadn r6, #mapa0Linha00
+    call ImprimeTela2
     
     call Escolhe_numero
     
@@ -75,7 +82,7 @@ Escolhe_numero:
     
     loadn r0, #603 ;posição da mensagem na tela
     loadn r1, #mensagem_escolha2
-    loadn r2, #1536 ;teal
+    loadn r2, #3584 ;aqua
     call Imprime
     
     loadn r1, #'1'
@@ -99,45 +106,44 @@ Escolhe_numero:
         
         jmp loop_escolha
     
-    sel_pedra:
-        loadn r0, #1
-        store selecao_usuraio, r0
-        
-        ;debug
-        loadn r0, #50 ;posição da mensagem na tela
-        loadn r1, #teste
-        loadn r2, #0
-        call Imprime
-        
-        jmp end_escolheNum
-        
-    sel_papel:
-        loadn r0, #2
-        store selecao_usuraio, r0
-        
-        ;debug
-        loadn r0, #50 ;posição da mensagem na tela
-        loadn r1, #teste
-        loadn r2, #2304 ; vermelho
-        call Imprime
-        
-        jmp end_escolheNum
-        
-    sel_tesoura:
-        loadn r0, #3
-        store selecao_usuraio, r0
-        
-        ;debug
-        loadn r0, #50 ;posição da mensagem na tela
-        loadn r1, #teste
-        loadn r2, #3072 ;azul
-        call Imprime
-        
-        jmp end_escolheNum
-      
+        sel_pedra:
+            loadn r0, #1
+            store selecao_usuraio, r0
+            
+            ;debug
+            loadn r0, #50 ;posição da mensagem na tela
+            loadn r1, #teste1
+            loadn r2, #0
+            call Imprime
+            
+            jmp end_escolheNum
+            
+        sel_papel:
+            loadn r0, #2
+            store selecao_usuraio, r0
+            
+            ;debug
+            loadn r0, #50 ;posição da mensagem na tela
+            loadn r1, #teste1
+            loadn r2, #2304 ; vermelho
+            call Imprime
+            
+            jmp end_escolheNum
+            
+        sel_tesoura:
+            loadn r0, #3
+            store selecao_usuraio, r0
+            
+            ;debug
+            loadn r0, #50 ;posição da mensagem na tela
+            loadn r1, #teste1
+            loadn r2, #3072 ;azul
+            call Imprime
+            
+            jmp end_escolheNum
+          
 
     end_escolheNum:
-        
         
         store IncRand, r4
         call Escolha_da_maquina
@@ -166,6 +172,53 @@ Escolha_da_maquina:
     
     loadi r3, r2 ; R3 = rand(IncRand)   
     
+    ;debug
+    loadn r0, #1
+    loadn r1, #2
+    loadn r2, #3
+    
+    
+    cmp r3, r0
+    jeq pedra
+    
+    cmp r3, r1
+    jeq papel
+    
+    cmp r3, r2
+    jeq tesoura
+    
+    pedra:
+            
+        ;debug
+        loadn r0, #60 ;posição da mensagem na tela
+        loadn r1, #teste2
+        loadn r2, #0
+        call Imprime
+            
+        jmp end
+            
+    papel:
+       
+        ;debug
+        loadn r0, #60 ;posição da mensagem na tela
+        loadn r1, #teste2
+        loadn r2, #2304 ; vermelho
+        call Imprime
+            
+        jmp end
+            
+    tesoura:
+
+        ;debug
+        loadn r0, #60 ;posição da mensagem na tela
+        loadn r1, #teste2
+        loadn r2, #3072 ;azul
+        call Imprime
+        
+        jmp end
+    
+    
+    end:
     store selecao_maquina, r3
     
     pop r3
@@ -281,10 +334,13 @@ Resultado:
     push r5 ; resultado do jogo
     push r6
     
+    call Limpa_Tela
+    
     loadn r0, #1 ; pedra / usuário perdeu
     loadn r1, #2 ; papel / usuário ganhou
     loadn r2, #3 ; tesoura / empate
     
+    ; 1-pedra, 2-papel, 3-tesoura
     loadn r3, #selecao_usuraio
     loadn r4, #selecao_maquina
     
@@ -415,7 +471,7 @@ Restart:
     push r3
     push r4
     
-    loadn r0, #1121 ;posição da mensagem na tela
+    loadn r0, #1122 ;posição da mensagem na tela
     loadn r1, #mensagem_restart
     loadn r2, #0
     call Imprime
@@ -475,7 +531,7 @@ Limpa_Tela:
     
     loadn r0, #0
     loadn r1, #mensagem_eraseAll
-    loadn r2, #512 ; verde
+    loadn r2, #0 ; branco
     call Imprime
     
     pop r2
@@ -572,19 +628,19 @@ papelUSLinha00: string "|--------------------------------------|"
 papelUSLinha01: string "|                   |                  |"
 papelUSLinha02: string "|                   |                  |"
 papelUSLinha03: string "|                   |                  |"
-papelUSLinha04: string "|                   |                  |"
-papelUSLinha05: string "|                   |                  |"
+papelUSLinha04: string "| papel             |                  |"
+papelUSLinha05: string "| -----             |                  |"
 papelUSLinha06: string "|                   |                  |"
 papelUSLinha07: string "|                   |                  |"
 papelUSLinha08: string "|                   |                  |"
 papelUSLinha09: string "|                   |                  |"
-papelUSLinha10: string "|                   |                  |"
-papelUSLinha11: string "|                   |                  |"
-papelUSLinha12: string "|                   |                  |"
-papelUSLinha13: string "|                   |                  |"
-papelUSLinha14: string "|                   |                  |"
-papelUSLinha15: string "|                   |                  |"
-papelUSLinha16: string "|  papel            |                  |"
+papelUSLinha10: string "|     _______       |                  |"
+papelUSLinha11: string "| ---'   ____)____  |                  |"
+papelUSLinha12: string "|           ______) |                  |"
+papelUSLinha13: string "|           _______)|                  |"
+papelUSLinha14: string "|          _______) |                  |"
+papelUSLinha15: string "| ---.__________)   |                  |"
+papelUSLinha16: string "|                   |                  |"
 papelUSLinha17: string "|                   |                  |"
 papelUSLinha18: string "|                   |                  |"
 papelUSLinha19: string "|                   |                  |"
@@ -593,8 +649,8 @@ papelUSLinha21: string "|                   |                  |"
 papelUSLinha22: string "|                   |                  |"
 papelUSLinha23: string "|                   |                  |"
 papelUSLinha24: string "|                   |                  |"
-papelUSLinha25: string "|                   |                  |"
-papelUSLinha26: string "|                   |                  |"
+papelUSLinha25: string "|                                      |"
+papelUSLinha26: string "|                                      |"
 papelUSLinha27: string "|                                      |"
 papelUSLinha28: string "|                                      |"
 papelUSLinha29: string "|--------------------------------------|"
@@ -604,19 +660,19 @@ pedraUSLinha00: string "|--------------------------------------|"
 pedraUSLinha01: string "|                   |                  |"
 pedraUSLinha02: string "|                   |                  |"
 pedraUSLinha03: string "|                   |                  |"
-pedraUSLinha04: string "|                   |                  |"
-pedraUSLinha05: string "|                   |                  |"
+pedraUSLinha04: string "| pedra             |                  |"
+pedraUSLinha05: string "| -----             |                  |"
 pedraUSLinha06: string "|                   |                  |"
 pedraUSLinha07: string "|                   |                  |"
 pedraUSLinha08: string "|                   |                  |"
 pedraUSLinha09: string "|                   |                  |"
-pedraUSLinha10: string "|                   |                  |"
-pedraUSLinha11: string "|                   |                  |"
-pedraUSLinha12: string "|                   |                  |"
-pedraUSLinha13: string "|                   |                  |"
-pedraUSLinha14: string "|                   |                  |"
-pedraUSLinha15: string "|                   |                  |"
-pedraUSLinha16: string "|    pedra          |                  |"
+pedraUSLinha10: string "|     ______        |                  |"
+pedraUSLinha11: string "| ---'  ___ )       |                  |"
+pedraUSLinha12: string "|      (___)        |                  |"
+pedraUSLinha13: string "|      (___)        |                  |"
+pedraUSLinha14: string "|      (__)         |                  |"
+pedraUSLinha15: string "|---.__(_)          |                  |"
+pedraUSLinha16: string "|                   |                  |"
 pedraUSLinha17: string "|                   |                  |"
 pedraUSLinha18: string "|                   |                  |"
 pedraUSLinha19: string "|                   |                  |"
@@ -625,8 +681,8 @@ pedraUSLinha21: string "|                   |                  |"
 pedraUSLinha22: string "|                   |                  |"
 pedraUSLinha23: string "|                   |                  |"
 pedraUSLinha24: string "|                   |                  |"
-pedraUSLinha25: string "|                   |                  |"
-pedraUSLinha26: string "|                   |                  |"
+pedraUSLinha25: string "|                                      |"
+pedraUSLinha26: string "|                                      |"
 pedraUSLinha27: string "|                                      |"
 pedraUSLinha28: string "|                                      |"
 pedraUSLinha29: string "|--------------------------------------|"
@@ -636,20 +692,20 @@ tesouraUSLinha00: string "|--------------------------------------|"
 tesouraUSLinha01: string "|                   |                  |"
 tesouraUSLinha02: string "|                   |                  |"
 tesouraUSLinha03: string "|                   |                  |"
-tesouraUSLinha04: string "|                   |                  |"
-tesouraUSLinha05: string "|                   |                  |"
+tesouraUSLinha04: string "| tesoura           |                  |"
+tesouraUSLinha05: string "| -------           |                  |"
 tesouraUSLinha06: string "|                   |                  |"
 tesouraUSLinha07: string "|                   |                  |"
 tesouraUSLinha08: string "|                   |                  |"
 tesouraUSLinha09: string "|                   |                  |"
-tesouraUSLinha10: string "|                   |                  |"
-tesouraUSLinha11: string "|                   |                  |"
-tesouraUSLinha12: string "|                   |                  |"
-tesouraUSLinha13: string "|                   |                  |"
-tesouraUSLinha14: string "|                   |                  |"
-tesouraUSLinha15: string "|                   |                  |"
+tesouraUSLinha10: string "|     _______       |                  |"
+tesouraUSLinha11: string "| ---'   ____)____  |                  |"
+tesouraUSLinha12: string "|           ______) |                  |"
+tesouraUSLinha13: string "|        __________)|                  |"
+tesouraUSLinha14: string "|       (____)      |                  |"
+tesouraUSLinha15: string "| ---.__(___)       |                  |"
 tesouraUSLinha16: string "|                   |                  |"
-tesouraUSLinha17: string "| tesoura           |                  |"
+tesouraUSLinha17: string "|                   |                  |"
 tesouraUSLinha18: string "|                   |                  |"
 tesouraUSLinha19: string "|                   |                  |"
 tesouraUSLinha20: string "|                   |                  |"
@@ -657,107 +713,107 @@ tesouraUSLinha21: string "|                   |                  |"
 tesouraUSLinha22: string "|                   |                  |"
 tesouraUSLinha23: string "|                   |                  |"
 tesouraUSLinha24: string "|                   |                  |"
-tesouraUSLinha25: string "|                   |                  |"
-tesouraUSLinha26: string "|                   |                  |"
+tesouraUSLinha25: string "|                                      |"
+tesouraUSLinha26: string "|                                      |"
 tesouraUSLinha27: string "|                                      |"
 tesouraUSLinha28: string "|                                      |"
 tesouraUSLinha29: string "|--------------------------------------|"
 
-; tela papel - máquina 
 papelMALinha00: string "|--------------------------------------|"
-papelMALinha01: string "|                                      |"
-papelMALinha02: string "|                                      |"
-papelMALinha03: string "|                                      |"
-papelMALinha04: string "|                                      |"
-papelMALinha05: string "|                                      |"
-papelMALinha06: string "|                                      |"
-papelMALinha07: string "|                                      |"
-papelMALinha08: string "|                                      |"
-papelMALinha09: string "|                                      |"
-papelMALinha10: string "|                                      |"
-papelMALinha11: string "|                                      |"
-papelMALinha12: string "|                                      |"
-papelMALinha13: string "|                                      |"
-papelMALinha14: string "|                                      |"
-papelMALinha15: string "|                                      |"
-papelMALinha16: string "|                               papel  |"
-papelMALinha17: string "|                                      |"
-papelMALinha18: string "|                                      |"
-papelMALinha19: string "|                                      |"
-papelMALinha20: string "|                                      |"
-papelMALinha21: string "|                                      |"
-papelMALinha22: string "|                                      |"
-papelMALinha23: string "|                                      |"
-papelMALinha24: string "|                                      |"
+papelMALinha01: string "|                    |                 |"
+papelMALinha02: string "|                    |                 |"
+papelMALinha03: string "|                    |                 |"
+papelMALinha04: string "|                    |           papel |"
+papelMALinha05: string "|                    |           ----- |"
+papelMALinha06: string "|                    |                 |"
+papelMALinha07: string "|                    |                 |"
+papelMALinha08: string "|                    |                 |"
+papelMALinha09: string "|                    |                 |"
+papelMALinha10: string "|                    |       _______   |"
+papelMALinha11: string "|                    |  ____(____   '--|"
+papelMALinha12: string "|                    | (______         |"
+papelMALinha13: string "|                    |(_______         |"
+papelMALinha14: string "|                    | (_______        |"
+papelMALinha15: string "|                    |   (__________.--|"
+papelMALinha16: string "|                    |                 |"
+papelMALinha17: string "|                    |                 |"
+papelMALinha18: string "|                    |                 |"
+papelMALinha19: string "|                    |                 |"
+papelMALinha20: string "|                    |                 |"
+papelMALinha21: string "|                    |                 |"
+papelMALinha22: string "|                    |                 |"
+papelMALinha23: string "|                    |                 |"
+papelMALinha24: string "|                    |                 |"
 papelMALinha25: string "|                                      |"
 papelMALinha26: string "|                                      |"
 papelMALinha27: string "|                                      |"
 papelMALinha28: string "|                                      |"
 papelMALinha29: string "|--------------------------------------|"
 
-; tela pedra - máquina  
+
 pedraMALinha00: string "|--------------------------------------|"
-pedraMALinha01: string "|                                      |"
-pedraMALinha02: string "|                                      |"
-pedraMALinha03: string "|                                      |"
-pedraMALinha04: string "|                                      |"
-pedraMALinha05: string "|                                      |"
-pedraMALinha06: string "|                                      |"
-pedraMALinha07: string "|                                      |"
-pedraMALinha08: string "|                                      |"
-pedraMALinha09: string "|                                      |"
-pedraMALinha10: string "|                                      |"
-pedraMALinha11: string "|                                      |"
-pedraMALinha12: string "|                                      |"
-pedraMALinha13: string "|                                      |"
-pedraMALinha14: string "|                                      |"
-pedraMALinha15: string "|                                      |"
-pedraMALinha16: string "|                             pedra    |"
-pedraMALinha17: string "|                                      |"
-pedraMALinha18: string "|                                      |"
-pedraMALinha19: string "|                                      |"
-pedraMALinha20: string "|                                      |"
-pedraMALinha21: string "|                                      |"
-pedraMALinha22: string "|                                      |"
-pedraMALinha23: string "|                                      |"
-pedraMALinha24: string "|                                      |"
+pedraMALinha01: string "|                    |                 |"
+pedraMALinha02: string "|                    |                 |"
+pedraMALinha03: string "|                    |                 |"
+pedraMALinha04: string "|                    |           pedra |"
+pedraMALinha05: string "|                    |           ----- |"
+pedraMALinha06: string "|                    |                 |"
+pedraMALinha07: string "|                    |                 |"
+pedraMALinha08: string "|                    |                 |"
+pedraMALinha09: string "|                    |                 |"
+pedraMALinha10: string "|                    |       ______    |"
+pedraMALinha11: string "|                    |      (___   '-- |"
+pedraMALinha12: string "|                    |      (___)      |"
+pedraMALinha13: string "|                    |      (___)      |"
+pedraMALinha14: string "|                    |       (__)      |"
+pedraMALinha15: string "|                    |        (_)__.-- |"
+pedraMALinha16: string "|                    |                 |"
+pedraMALinha17: string "|                    |                 |"
+pedraMALinha18: string "|                    |                 |"
+pedraMALinha19: string "|                    |                 |"
+pedraMALinha20: string "|                    |                 |"
+pedraMALinha21: string "|                    |                 |"
+pedraMALinha22: string "|                    |                 |"
+pedraMALinha23: string "|                    |                 |"
+pedraMALinha24: string "|                    |                 |"
 pedraMALinha25: string "|                                      |"
 pedraMALinha26: string "|                                      |"
 pedraMALinha27: string "|                                      |"
 pedraMALinha28: string "|                                      |"
 pedraMALinha29: string "|--------------------------------------|"
 
-; tela tesoura - máquina
+
 tesouraMALinha00: string "|--------------------------------------|"
-tesouraMALinha01: string "|                                      |"
-tesouraMALinha02: string "|                                      |"
-tesouraMALinha03: string "|                                      |"
-tesouraMALinha04: string "|                                      |"
-tesouraMALinha05: string "|                                      |"
-tesouraMALinha06: string "|                                      |"
-tesouraMALinha07: string "|                                      |"
-tesouraMALinha08: string "|                                      |"
-tesouraMALinha09: string "|                                      |"
-tesouraMALinha10: string "|                                      |"
-tesouraMALinha11: string "|                                      |"
-tesouraMALinha12: string "|                                      |"
-tesouraMALinha13: string "|                                      |"
-tesouraMALinha14: string "|                                      |"
-tesouraMALinha15: string "|                                      |"
-tesouraMALinha16: string "|                                      |"
-tesouraMALinha17: string "|                             tesoura  |"
-tesouraMALinha18: string "|                                      |"
-tesouraMALinha19: string "|                                      |"
-tesouraMALinha20: string "|                                      |"
-tesouraMALinha21: string "|                                      |"
-tesouraMALinha22: string "|                                      |"
-tesouraMALinha23: string "|                                      |"
-tesouraMALinha24: string "|                                      |"
+tesouraMALinha01: string "|                    |                 |"
+tesouraMALinha02: string "|                    |                 |"
+tesouraMALinha03: string "|                    |                 |"
+tesouraMALinha04: string "|                    |         tesoura |"
+tesouraMALinha05: string "|                    |         ------- |"
+tesouraMALinha06: string "|                    |                 |"
+tesouraMALinha07: string "|                    |                 |"
+tesouraMALinha08: string "|                    |                 |"
+tesouraMALinha09: string "|                    |                 |"
+tesouraMALinha10: string "|                    |       _______   |"
+tesouraMALinha11: string "|                    |  ____(____   '--|"
+tesouraMALinha12: string "|                    | (______         |"
+tesouraMALinha13: string "|                    | (__________     |"
+tesouraMALinha14: string "|                    |      (____)     |"
+tesouraMALinha15: string "|                    |       (___)__.--|"
+tesouraMALinha16: string "|                    |                 |"
+tesouraMALinha17: string "|                    |                 |"
+tesouraMALinha18: string "|                    |                 |"
+tesouraMALinha19: string "|                    |                 |"
+tesouraMALinha20: string "|                    |                 |"
+tesouraMALinha21: string "|                    |                 |"
+tesouraMALinha22: string "|                    |                 |"
+tesouraMALinha23: string "|                    |                 |"
+tesouraMALinha24: string "|                    |                 |"
 tesouraMALinha25: string "|                                      |"
 tesouraMALinha26: string "|                                      |"
 tesouraMALinha27: string "|                                      |"
 tesouraMALinha28: string "|                                      |"
 tesouraMALinha29: string "|--------------------------------------|"
+
 
 ; tela inicial
 mapa0Linha00: string "|--------------------------------------|"
@@ -780,13 +836,12 @@ mapa0Linha16: string "|                                      |"
 mapa0Linha17: string "|                                      |"
 mapa0Linha18: string "|                                      |"
 mapa0Linha19: string "|                                      |"
-mapa0Linha20: string "|                                      |"
-mapa0Linha21: string "|                                      |"
-mapa0Linha22: string "|                                      |"
-mapa0Linha23: string "|                                      |"
-mapa0Linha24: string "|                                      |"
-mapa0Linha25: string "|     alguma arte ascii daora          |"
-mapa0Linha26: string "|                                      |"
-mapa0Linha27: string "|                                      |"
-mapa0Linha28: string "|                                      |"
-mapa0Linha29: string "|--------------------------------------|"
+mapa0Linha20: string "|                    _                 |"
+mapa0Linha21: string "|                   ) )                |"
+mapa0Linha22: string "|                  /=/___              |"
+mapa0Linha23: string "|              ---'  (___)             |"
+mapa0Linha24: string "|                   (___)              |"
+mapa0Linha27: string "|                   (__)               |"
+mapa0Linha28: string "|             ---.__(_)                |"
+mapa0Linha29: string "|                                      |"
+
