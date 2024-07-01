@@ -145,6 +145,9 @@ Escolhe_numero:
 
     end_escolheNum:
         
+        loadn r3, #3  
+        mod r4, r4, r3
+        
         store IncRand, r4
         call Escolha_da_maquina
     
@@ -164,7 +167,6 @@ Escolha_da_maquina:
     
     loadn r0, #3
     load r1, IncRand
-    mod r1, r0, r1 ; r1 = IncRand % 3
     
     loadn r2, #rand
     
@@ -334,7 +336,8 @@ Resultado:
     push r5 ; resultado do jogo
     push r6
     
-    call Limpa_Tela
+    ; debug: volta o limpa_tela
+    ;call Limpa_Tela
     
     loadn r0, #1 ; pedra / usuário perdeu
     loadn r1, #2 ; papel / usuário ganhou
