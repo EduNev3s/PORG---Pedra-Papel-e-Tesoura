@@ -1,4 +1,4 @@
-# PORG---Labirinto
+# PORG---Pedra Papel e Tesoura
 Trabalho da matéria SSC0119-Prática-em-Organização-de-Computadoes
 
 Professor:
