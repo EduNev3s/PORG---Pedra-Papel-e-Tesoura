@@ -10,8 +10,8 @@
 /* Label */
 typedef struct
 {
-    unsigned short End;
-    char Nome[LABEL_MAX_SIZE + 1];
+  unsigned short End;
+  char Nome[LABEL_MAX_SIZE + 1];
 } Label;
 
 void AddLabel(char *, unsigned short);

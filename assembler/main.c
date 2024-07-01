@@ -17,18 +17,18 @@ int main(int argc, char *argv[])
 
     if (argc < 3)
     {
-        printf("Montador :\nUso : %s <arquivo texto de entrada> <arquivo .mif de saida>\n",argv[0]);
+        printf("Montador :\nUso : %s <arquivo texto de entrada> <arquivo .mif de saida>\n", argv[0]);
 #ifndef __linux__
         system("pause");
 #endif
         exit(1);
     }
 
-    printf("Montador v.%s\n",VERSAO);
+    printf("Montador v.%s\n", VERSAO);
 
     CarregaPrograma(argv[1]);
 
-    out = fopen(argv[2],"w");
+    out = fopen(argv[2], "w");
 
     if (out == NULL)
     {
@@ -40,5 +40,4 @@ int main(int argc, char *argv[])
     fclose(out);
 
     return 0;
-
 }

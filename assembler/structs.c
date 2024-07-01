@@ -15,27 +15,28 @@ unsigned int label_cnt = 0;
 /* Estruturas para armazenar EQUs */
 
 /* Adiciona Label */
-void AddLabel(char * nome, unsigned short end)
+void AddLabel(char *nome, unsigned short end)
 {
-    if (label_cnt < MAX_LABELS)
-    {
-        strcpy(labels[label_cnt].Nome,nome);
-        labels[label_cnt].End = end;
-        label_cnt++;
-    }
-    else parser_Abort("Maximo de labels atingido!");
+  if (label_cnt < MAX_LABELS)
+  {
+    strcpy(labels[label_cnt].Nome, nome);
+    labels[label_cnt].End = end;
+    label_cnt++;
+  }
+  else
+    parser_Abort("Maximo de labels atingido!");
 }
 
 /* Busca Label e retorna endereco (fazer algo mais eficiente depois!) */
-unsigned short FindLabel(char * nome)
+unsigned short FindLabel(char *nome)
 {
-    register unsigned int i = 0;
-    while (i < label_cnt)
-    {
-        if (strcmp(labels[i].Nome,nome) == 0)
-            return labels[i].End;
-        i++;
-    }
-    parser_Abort("Referencia invalida.");
-    return 0;
+  register unsigned int i = 0;
+  while (i < label_cnt)
+  {
+    if (strcmp(labels[i].Nome, nome) == 0)
+      return labels[i].End;
+    i++;
+  }
+  parser_Abort("Referencia invalida.");
+  return 0;
 }
