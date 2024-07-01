@@ -93,7 +93,7 @@ ARCHITECTURE main of cpu is
 	CONSTANT NOP			: STD_LOGIC_VECTOR(5 downto 0) := "000000";	-- NOP            -- Do Nothing	 									Format: < inst(6) | xxxxxxxxxx >
 	CONSTANT HALT			: STD_LOGIC_VECTOR(5 downto 0) := "001111";	-- HALT           -- StOP Here										Format: < inst(6) | xxxxxxxxxx >
 	CONSTANT SETC			: STD_LOGIC_VECTOR(5 downto 0) := "001000";	-- CLEARC / SETC  -- Set/Clear CarRY: b9 = 1-set; 0-clear	Format: < inst(6) | b9 | xxxxxxxxx >
-	CONSTANT BREAKP		: STD_LOGIC_VECTOR(5 downto 0) := "001110"; 	-- BREAK POINT    -- Switch to manual clock						Format: < inst(6) | xxxxxxxxxx >	
+	CONSTANT BREAKP		: STD_LOGIC_VECTOR(5 downto 0) := "001110"; 	-- BREAK POINT    -- Switch to manual clock; b9-b6 = COND	  Format: < inst(6) | CON(4) | xxxxxx >	
 	
 	
 	-- CONSTANTes para controle do Mux2: Estes sinais selecionam as respectivas entradas para o Mux2
@@ -666,11 +666,30 @@ begin
 --========================================================================
 -- BREAKP
 --========================================================================			
-			IF( IR(15 DOWNTO 10) = BREAKP) THEN 
-				BreakFlag := not(BreakFlag);  -- Troca entre clock manual e clock autom�tico
-				BREAK <= BreakFlag;
-				state := fetch;	
-				PONTO <= "101";
+			IF( IR(15 DOWNTO 10) = BREAKP) THEN 				
+				IF((IR(9 DOWNTO 6) = "0000") OR
+					((IR(9 DOWNTO 6) = "0111") AND FR(0) = '1') OR
+					((IR(9 DOWNTO 6) = "1001") AND (FR(2) = '1' OR FR(0) = '1')) OR
+					((IR(9 DOWNTO 6) = "1000") AND FR(1) = '1') OR
+					((IR(9 DOWNTO 6) = "1010") AND (FR(2) = '1' OR FR(1) = '1')) OR
+					((IR(9 DOWNTO 6) = "0001") AND FR(2) = '1') OR
+					((IR(9 DOWNTO 6) = "0010") AND FR(2) = '0') OR
+					((IR(9 DOWNTO 6) = "0011") AND FR(3) = '1') OR
+					((IR(9 DOWNTO 6) = "0100") AND FR(3) = '0') OR
+					((IR(9 DOWNTO 6) = "0101") AND FR(4) = '1') OR
+					((IR(9 DOWNTO 6) = "0110") AND FR(4) = '0') OR
+					((IR(9 DOWNTO 6) = "1011") AND FR(5) = '1') OR
+					((IR(9 DOWNTO 6) = "1100") AND FR(5) = '0') OR
+					((IR(9 DOWNTO 6) = "1101") AND FR(6) = '1') OR
+					((IR(9 DOWNTO 6) = "1110") AND FR(9) = '1')) THEN
+					BreakFlag := not(BreakFlag);  -- Troca entre clock manual e clock automático
+					BREAK <= BreakFlag;
+					PONTO <= "101";
+				ELSE
+					IncPC := '1';
+				END IF;
+				
+				state := fetch;
 			END IF;		
 							
 -- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX			
