@@ -8,3 +8,5 @@ Membros do grupo:
 - Eduardo Neves Gomes da Silva - 13822710
 - Eduarda Almeida Garrett de Carvalho - 14566794
 - Jean Patrick Ngandu Mamani - 14712678
+
+[Vídeo de apresentação do trabalho](https://youtu.be/J6x4cMvGlRs)
